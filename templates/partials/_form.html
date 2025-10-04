@@ -1,0 +1,19 @@
+{# Usage: {% include 'partials/_form.html' with form=form submit_text='Save' %} #}
+<form method="post" {% if enctype %}enctype="{{ enctype }}"{% endif %} class="needs-validation" novalidate>
+{% csrf_token %}
+{% for field in form %}
+<div class="mb-3">
+<label class="form-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+{% if field.errors %}
+{{ field.as_widget(attrs={"class": "form-control is-invalid"}) }}
+<div class="invalid-feedback">{{ field.errors|striptags }}</div>
+{% else %}
+{{ field.as_widget(attrs={"class": "form-control"}) }}
+{% endif %}
+{% if field.help_text %}
+<div class="form-text">{{ field.help_text }}</div>
+{% endif %}
+</div>
+{% endfor %}
+<button type="submit" class="btn btn-primary w-100">{{ submit_text|default:'Submit' }}</button>
+</form>

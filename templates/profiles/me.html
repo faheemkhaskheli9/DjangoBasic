@@ -1,12 +1,48 @@
 {% extends "base.html" %}
-{% block title %}My Profile{% endblock %}
+{% block title %}My Profile · MyProject{% endblock %}
 {% block content %}
-<h1>My Profile</h1>
-<p><strong>Username:</strong> {{ profile.user.username }}</p>
-<p><strong>Email:</strong> {{ profile.user.email }}</p>
-<p><strong>Full name:</strong> {{ profile.full_name }}</p>
-<p><strong>Bio:</strong> {{ profile.bio|default:"—" }}</p>
-<p><strong>Location:</strong> {{ profile.location|default:"—" }}</p>
-<p><strong>Birth date:</strong> {{ profile.birth_date|date:"Y-m-d"|default:"—" }}</p>
-{% if profile.avatar %}<img src="{{ profile.avatar.url }}" alt="avatar" width="120">{% endif %}
+<section class="card">
+  <div class="profile-header">
+    <div class="avatar">
+      {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="Avatar of {{ profile.user.username }}">
+      {% else %}
+        <div class="avatar-placeholder">{{ profile.user.username|first|upper }}</div>
+      {% endif %}
+    </div>
+    <div>
+      <h1 class="title">{{ profile.full_name|default:profile.user.get_username }}</h1>
+      <p class="muted">@{{ profile.user.username }} · {{ profile.user.email }}</p>
+    </div>
+    <div class="actions">
+      <a class="btn btn-ghost" href="{% url 'profiles:edit' %}">Edit Profile</a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid grid-3">
+    <div class="stat">
+      <span class="stat-label">Location</span>
+      <span class="stat-value">{{ profile.location|default:"—" }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Birth date</span>
+      <span class="stat-value">
+        {% if profile.birth_date %}{{ profile.birth_date|date:"M d, Y" }}{% else %}—{% endif %}
+      </span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Joined</span>
+      <span class="stat-value">{{ profile.user.date_joined|date:"M d, Y" }}</span>
+    </div>
+  </div>
+
+  {% if profile.bio %}
+    <div class="section">
+      <h2>About</h2>
+      <p>{{ profile.bio }}</p>
+    </div>
+  {% endif %}
+</section>
 {% endblock %}
