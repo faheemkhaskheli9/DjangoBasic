@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}MyProject{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+
+<body>
+    <nav>
+        {% if user.is_authenticated %}
+        Hello, {{ user.username }} |
+        <a href="{% url 'profiles:me' %}">My Profile</a> |
+        <a href="{% url 'profiles:edit' %}">Edit</a> |
+        <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+        {% else %}
+        <a href="{% url 'users:login' %}">Login</a> |
+        <a href="{% url 'users:signup' %}">Sign Up</a>
+        {% endif %}
+    </nav>
+    <hr>
+    {% if messages %}
+    {% for m in messages %}<p>{{ m }}</p>{% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+</body>
+
+</html>
