@@ -1,0 +1,60 @@
+{# templates/messaging/thread.html #}
+{% extends "base.html" %}
+{% load messaging_extras %}
+{% block title %}Conversation · MyProject{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="avatar" style="width:42px; height:42px;">
+                <div class="avatar-placeholder">{{ other.username|first|upper }}</div>
+            </div>
+            <h1 style="margin:0;">@{{ other.username }}</h1>
+        </div>
+        <a class="btn btn-ghost" href="{% url 'messaging:inbox' %}">Back</a>
+    </div>
+    <div class="divider"></div>
+
+    <div id="messages" style="max-height: 55vh; overflow:auto; display:flex; flex-direction:column; gap:10px;">
+        {% for m in thread.messages.all %}
+        <div class="msg-row"
+            style="display:flex; {% if m.sender|is_me:user %}justify-content:flex-end{% else %}justify-content:flex-start{% endif %};">
+            <div class="bubble {% if m.sender|is_me:user %}me{% else %}them{% endif %}">
+                <div class="small muted">{{ m.created_at|date:"M d, H:i" }}</div>
+                <div>{{ m.body|linebreaksbr }}</div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="muted">Say hello 👋</p>
+        {% endfor %}
+    </div>
+
+    <form method="post" class="form" style="margin-top:12px;">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="field">
+            {{ form.body }}
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+    </form>
+</section>
+
+<style>
+    .bubble {
+        max-width: 70%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+    }
+
+    .bubble.me {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary-600);
+    }
+</style>
+{% endblock %}

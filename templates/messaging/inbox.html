@@ -1,0 +1,54 @@
+{# templates/messaging/inbox.html #}
+{% extends "base.html" %}
+{% load messaging_extras %}
+{% block title %}Inbox · MyProject{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>Inbox</h1>
+        <a class="btn btn-primary" href="{% url 'messaging:new' %}">New Message</a>
+    </div>
+    <div class="divider"></div>
+
+    {% if threads %}
+    <ul style="list-style:none; padding:0; margin:0;">
+        {% for t in threads %}
+        {% other_user t user as other %}
+        {% with last=t.last_message %}
+        <li class="inbox-item" style="padding:12px 8px; border-bottom:1px solid var(--border);">
+            <a href="{% url 'messaging:thread' t.pk %}" style="display:flex; align-items:start; gap:12px;">
+                <div class="avatar" style="width:42px; height:42px;">
+                    <div class="avatar-placeholder">{{ other.username|first|upper }}</div>
+                </div>
+                <div style="flex:1;">
+                    <div style="display:flex; justify-content:space-between; gap:10px;">
+                        <strong>{{ other.username }}</strong>
+                        {% if last %}<span class="muted small">{{ last.created_at|date:"M d, H:i" }}</span>{% endif %}
+                    </div>
+
+                    {% if last %}
+                    <div class="muted small" style="margin-top:4px;">
+                        {% if last.sender|is_me:user %}
+                        You: {{ last.body|truncatechars:80 }}
+                        {% else %}
+                        {{ last.sender.username }}: {{ last.body|truncatechars:80 }}
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="muted small">No messages yet</div>
+                    {% endif %}
+                </div>
+
+                {% unread_for t user as uc %}
+                {% if uc %}<span class="badge">{{ uc }}</span>{% endif %}
+            </a>
+        </li>
+        {% endwith %}
+        {% endfor %}
+
+    </ul>
+    {% else %}
+    <p class="muted">Your inbox is empty. Start a conversation.</p>
+    {% endif %}
+</section>
+{% endblock %}

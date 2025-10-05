@@ -1,0 +1,26 @@
+{# templates/messaging/new.html #}
+{% extends "base.html" %}
+{% block title %}New Message · MyProject{% endblock %}
+{% block content %}
+<section class="card card-auth">
+  <h1>Start a conversation</h1>
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="grid grid-2">
+      <div class="field">
+        <label for="{{ form.to.id_for_label }}">{{ form.to.label }}</label>
+        {{ form.to }}
+      </div>
+      <div class="field span-2">
+        <label for="{{ form.body.id_for_label }}">{{ form.body.label }}</label>
+        {{ form.body }}
+      </div>
+    </div>
+    <div class="form-actions">
+      <a class="btn btn-ghost" href="{% url 'messaging:inbox' %}">Cancel</a>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

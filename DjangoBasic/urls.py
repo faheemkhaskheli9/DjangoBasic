@@ -27,5 +27,6 @@ urlpatterns = [
     path("users/", include("users.urls", namespace="users")),
     path("profiles/", include("profiles.urls", namespace="profiles")),
     path("", RedirectView.as_view(pattern_name="profiles:me", permanent=False)),
+    path("messages/", include("messaging.urls", namespace="messaging")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

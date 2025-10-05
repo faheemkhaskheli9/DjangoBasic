@@ -160,3 +160,15 @@ a:hover {
 a:visited {
   color: var(--primary-600); /* or any other visible color */
 }
+
+/* static/styles.css */
+.badge {
+  margin-left: 6px;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.75rem;
+  border: 1px solid var(--primary-600);
+}
